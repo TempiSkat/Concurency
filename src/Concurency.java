@@ -2,18 +2,21 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 class JThread extends Thread {
     int specialNumber;
     int[][] res;
     ReentrantLock locker;
+    TimeUnit time;
 
-    JThread(String name, int numb, int[][] array, ReentrantLock lock) {
+    JThread(String name, int numb, int[][] array, ReentrantLock lock, TimeUnit time) {
         super(name);
         specialNumber = numb;
         this.res = array;
         locker = lock;
+        this.time = time;
     }
 
     public void run() {
@@ -23,15 +26,16 @@ class JThread extends Thread {
                 if (res[k][k] == 0)
                     res[k][k] = k + 66;
             }
+
             System.out.printf("%s \n", Thread.currentThread().getName());
-            Thread.sleep(100);
+            time.sleep(1 / 2);
 
         } catch (InterruptedException e) {
             System.out.println(e.getMessage());
         } finally {
-            for (int j = 0; j < res.length; j++) {
+            for (int[] re : res) {
                 for (int k = 0; k < res.length; k++) {
-                    System.out.print(res[j][k] + "\t");
+                    System.out.print(re[k] + "\t");
                 }
                 System.out.println();
             }
@@ -50,6 +54,8 @@ public class Concurency {
         ReentrantLock locker = new ReentrantLock();
         int n = 8;
         Scanner sc = null;
+        TimeUnit time = TimeUnit.SECONDS;
+
         try {
             sc = new Scanner(new BufferedReader(new FileReader("src/Sample.txt")));
         } catch (FileNotFoundException e) {
@@ -82,7 +88,7 @@ public class Concurency {
 
 
         for (int i = 1; i < 6; i++)
-            new JThread("JThread " + i, i, array, locker).start();
+            new JThread("JThread " + i, i, array, locker, time).start();
 
 
     }
