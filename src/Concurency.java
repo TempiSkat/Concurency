@@ -87,7 +87,7 @@ public class Concurency {
         }
 
 
-        for (int i = 1; i < 6; i++)
+        for (int i = 1; i < n / 2 + 2; i++)
             new JThread("JThread " + i, i, array, locker, time).start();
 
 
